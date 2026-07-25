@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ff78ae">
+  <title>Harun'dan Yağmur'a 💖</title>
+  <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{min-height:100svh;background:linear-gradient(145deg,#ffdce9,#eee4ff 55%,#fff0d6);color:#6d3150;overflow-x:hidden;touch-action:manipulation}
+    .page{max-width:720px;margin:auto;padding:16px 14px 42px;text-align:center;position:relative;z-index:2}
+    .card,.photoWrap{background:#ffffffce;border:1px solid #fff;border-radius:30px;box-shadow:0 16px 45px #9f51752b;backdrop-filter:blur(14px)}
+    .card{padding:25px 18px}
+    .small{font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:#a84c7b}
+    h1{font-family:Georgia,serif;font-size:clamp(38px,11vw,68px);line-height:1;margin:9px 0 13px}
+    .lead{line-height:1.6;color:#7b526b}
+    .tap{border:0;border-radius:999px;padding:14px 20px;margin-top:16px;background:linear-gradient(135deg,#ff73ad,#bd87ff);color:#fff;font-size:17px;font-weight:900;box-shadow:0 10px 25px #bd87ff4d;cursor:pointer;touch-action:manipulation}
+    .photoWrap{margin-top:16px;padding:13px}
+    .photoTitle{font-weight:900;margin:5px 0 11px}
+    .photo{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:22px;display:block;background:#f4dbe7;transition:opacity .18s,transform .18s}
+    .photo.change{opacity:.15;transform:scale(.96)}
+    .caption{font-size:17px;font-weight:1000;margin:12px 0 5px;color:#8c4268}
+    .counter{position:fixed;z-index:40;right:9px;bottom:9px;padding:9px 12px;border-radius:999px;background:#ffffffdf;font-size:12px;font-weight:900;box-shadow:0 6px 22px #00000018}
+    .bubble{position:fixed;z-index:60;max-width:90vw;padding:13px 17px;border-radius:999px;background:#fff;color:#83365f;font-weight:1000;box-shadow:0 13px 32px #0003;pointer-events:none;white-space:nowrap;transform:translate(-50%,-50%);animation:pop 2.2s ease forwards}
+    .heart{position:fixed;z-index:55;pointer-events:none;transform:translate(-50%,-50%);filter:drop-shadow(0 5px 8px #0002);animation:burst var(--t) ease-out forwards}
+    .ambient{position:fixed;z-index:0;pointer-events:none;opacity:.18;animation:up var(--d) linear infinite}
+    @keyframes pop{0%{opacity:0;transform:translate(-50%,-25%) scale(.6)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-130%) scale(.9)}}
+    @keyframes burst{0%{opacity:0;transform:translate(-50%,-20%) scale(.45)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(var(--r)) scale(1.25)}}
+    @keyframes up{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-20vh) rotate(45deg)}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="card">
+      <div class="small">Harun'dan Yağmur'a</div>
+      <h1>Yağmur'um 💖</h1>
+      <div class="lead">Ekranın herhangi bir yerine veya aşağıdaki butona dokun. Her dokunuşunda sana bir sevgi sözü gelsin, bir sürü kalp uçuşsun ve aşağıdaki fotoğraf değişsin.</div>
+      <button class="tap" id="tap" type="button">Buraya dokun 💗</button>
+    </section>
+    <section class="photoWrap">
+      <div class="photoTitle">Benim güzel sevgilim 📸</div>
+      <img class="photo" id="photo" src="photos/1.svg" alt="Yağmur">
+      <div class="caption" id="caption">Tipini yerim 😍</div>
+    </section>
+  </div>
+  <div class="counter" id="counter">Dokunuş: 0 💞</div>
+  <script>
+    const photos=['photos/1.svg','photos/3.svg','photos/7.svg'];
+    const words=['Seni seviyorum ❤️','Tipini yerim 😍','Götünü yerim 😘','Aşkım 💖','Bir tanem 💗','Güzelim 😻','Kalbim 💞','Canım benim 🥰'];
+    const captions=['Tipini yerim 😍','Götünü yerim 😘','Seni çok seviyorum ❤️'];
+    const icons=['❤️','💖','💗','💕','💞','💘','💓','😻','🥰'];
+    const photo=document.getElementById('photo');
+    const caption=document.getElementById('caption');
+    const counter=document.getElementById('counter');
+    let photoIndex=0,count=0,lastTouch=0;
+    function clamp(v,a,b){return Math.min(Math.max(v,a),b)}
+    function changePhoto(){
+      photo.classList.add('change');
+      setTimeout(()=>{
+        photoIndex=(photoIndex+1)%photos.length;
+        photo.src=photos[photoIndex];
+        caption.textContent=captions[photoIndex];
+        photo.classList.remove('change');
+      },130);
+    }
+    function love(x,y){
+      const now=Date.now();
+      if(now-lastTouch<180)return;
+      lastTouch=now;
+      count++;
+      counter.textContent=`Dokunuş: ${count} 💞`;
+      const bubble=document.createElement('div');
+      bubble.className='bubble';
+      bubble.textContent=words[(count-1)%words.length];
+      bubble.style.left=clamp(x,125,innerWidth-125)+'px';
+      bubble.style.top=clamp(y,55,innerHeight-55)+'px';
+      document.body.appendChild(bubble);
+      bubble.addEventListener('animationend',()=>bubble.remove());
+      for(let n=0;n<26;n++){
+        const h=document.createElement('span');
+        h.className='heart';
+        h.textContent=icons[Math.floor(Math.random()*icons.length)];
+        h.style.left=x+'px';h.style.top=y+'px';
+        h.style.fontSize=(18+Math.random()*26)+'px';
+        h.style.setProperty('--x',((Math.random()-.5)*340)+'px');
+        h.style.setProperty('--y',(-70-Math.random()*280)+'px');
+        h.style.setProperty('--r',((Math.random()-.5)*240)+'deg');
+        h.style.setProperty('--t',(1.3+Math.random()*1.5)+'s');
+        document.body.appendChild(h);
+        h.addEventListener('animationend',()=>h.remove());
+      }
+      changePhoto();
+    }
+    document.addEventListener('pointerdown',e=>love(e.clientX,e.clientY));
+    document.getElementById('tap').addEventListener('click',e=>{
+      e.stopPropagation();
+      const r=e.currentTarget.getBoundingClientRect();
+      love(r.left+r.width/2,r.top+r.height/2);
+    });
+    for(let n=0;n<18;n++){
+      const a=document.createElement('span');
+      a.className='ambient';
+      a.textContent=icons[Math.floor(Math.random()*icons.length)];
+      a.style.left=Math.random()*100+'vw';
+      a.style.fontSize=(18+Math.random()*30)+'px';
+      a.style.setProperty('--d',(10+Math.random()*15)+'s');
+      a.style.animationDelay=(-Math.random()*14)+'s';
+      document.body.appendChild(a);
+    }
+    setTimeout(()=>love(innerWidth/2,110),650);
+  </script>
+</body>
+</html>
